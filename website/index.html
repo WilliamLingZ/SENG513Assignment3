@@ -4,7 +4,9 @@
 		<title>Socket.IO chat</title>
 		<style>
 			* { background: #3399ff; margin: 0; padding: 0; box-sizing: border-box; }
-			body { font: 13px Helvetica, Arial; }
+			b { background: #80ffaa; }
+			font { background: #80ffaa; }
+			body { font: 13px Helvetica, Arial;}
 			form { background: #000; padding: 3px; position: fixed; bottom: 30px; margin-left: 5%; width: 90.5%; }
 			form input { background-color: #00ffff; border: 0; padding: 10px; width: 89.5%; margin-right: .5%; }
 			form button { width: 10%; background-color: #fff; border: none; padding: 10px; }
@@ -26,11 +28,27 @@
 		$(function() {
 			var socket = io();
 			var name;
+			var nickcolor;
 			$('form').submit(function(){
+			if ($('#m').val().search("/nick ") == 0) {
+				var newName = $('#m').val().split(" ");
+				name = newName[1];
+				document.getElementById("user").innerHTML = "You are " + name + ".";
+				$('#m').val('');
+				return false;
+			} else if ($('#m').val().search("/nickcolor ") == 0) {
+				var newColor = $('#m').val().split(" ");
+				nickcolor = newColor[1];
+				$('#m').val('');
+				return false;
+			} else {
 				message = name + ": " + $('#m').val();
+				message = message.fontcolor(nickcolor);
 				socket.emit('chat', message);
 				$('#m').val('');
 				return false;
+			}
+				
 			});
 			socket.on('chat', function(msg){
 				$('#messages').append($('<li>').html(msg));
@@ -39,6 +57,7 @@
 			socket.on('userName', function(text){
 				document.getElementById("user").innerHTML = "You are " + text + ".";
 				name = text;
+				nickcolor = "#000";
 			});
 		});
 	</script>

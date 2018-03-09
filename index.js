@@ -22,10 +22,7 @@ io.on('connection', function(socket) {
 		var d = new Date();
 		h = d.getHours().toString();
 		m = d.getMinutes().toString();
-		h = h.concat(':');
-		h = h.concat(m);
-		h = h.concat(')');
-		msg = h.concat(msg);
+		msg = h + ':' + m + ')' + msg;
 		socket.broadcast.emit('chat', msg);
 		msg = msg.bold();
 		socket.emit('chat', msg);
