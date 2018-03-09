@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Socket.IO chat</title>
+		<style>
+			* { background: #3399ff; margin: 0; padding: 0; box-sizing: border-box; }
+			body { font: 13px Helvetica, Arial; }
+			form { background: #000; padding: 3px; position: fixed; bottom: 30px; margin-left: 5%; width: 90.5%; }
+			form input { background-color: #00ffff; border: 0; padding: 10px; width: 89.5%; margin-right: .5%; }
+			form button { width: 10%; background-color: #fff; border: none; padding: 10px; }
+			#messages { list-style-type: none; margin: 0; padding: 0; display: table-cell; vertical-align: bottom; height: 750px; background: #80ffaa; }
+			#messages li { padding: 5px 10px; background: #80ffaa; }
+			#chatbox { position: relative; text-align: left; margin: 0 auto; margin-top: 60px; margin-bottom: 85px; padding: 25px; background: #80ffaa; height: 800px; width: 80%; border: 3px solid #000; overflow: auto; display: inline-block; }
+			#onlineusers { position: relative; text-align: left; margin: 0 auto; margin-top: 60px; margin-bottom: 85px; padding: 25px; background: #80ffaa; height: 800px; width: 15%; border: 3px solid #000; overflow: auto; display: inline-block; }
+			#usernames { list-style-type: none; margin: 0; padding: 0; display: table-cell; height: 750px; background: #80ffaa; }
+			#usernames li { padding: 5px 10px; background: #80ffaa; }
+			#wrapper {margin-left: 5%; width: 95%; overflow: hidden; }
+			#user { font: 15px Helvetica, Arial; position: fixed; margin: -50px 0px 0px 0px;}
+			#online { font: 15px Helvetica, Arial; position: fixed; margin: -50px 0px 0px 0px;}
+			
+		</style>
+	</head>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script>
+		$(function() {
+			var socket = io();
+			var name;
+			$('form').submit(function(){
+				message = name + ": " + $('#m').val();
+				socket.emit('chat', message);
+				$('#m').val('');
+				return false;
+			});
+			socket.on('chat', function(msg){
+				$('#messages').append($('<li>').html(msg));
+				$('#usernames').append($('<li>').html(msg));
+			});
+			socket.on('userName', function(text){
+				document.getElementById("user").innerHTML = "You are " + text + ".";
+				name = text;
+			});
+		});
+	</script>
+	<body>
+		<div id="wrapper">
+			<div id ="chatbox">
+				<h1 id="user">You are User1.</h1>
+				<ul id="messages" ></ul>
+			</div>
+			<div id="onlineusers">
+				<h1 id="online">Online Users</h1>
+				<ul id="usernames"></ul>
+			</div>
+		</div>
+		<form action="">
+			<input id="m" autocomplete="off"; /><button>Send</button>
+		</form>
+	</body>
+</html>
