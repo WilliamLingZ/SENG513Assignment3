@@ -31,20 +31,21 @@
 			var nickcolor;
 			$('form').submit(function(){
 			if ($('#m').val().search("/nick ") == 0) {
+				socket.emit('namechangeremove', name);
 				var newName = $('#m').val().split(" ");
 				name = newName[1];
+				socket.emit('namechangeadd', name);
 				document.getElementById("user").innerHTML = "You are " + name + ".";
 				$('#m').val('');
 				return false;
 			} else if ($('#m').val().search("/nickcolor ") == 0) {
 				var newColor = $('#m').val().split(" ");
-				nickcolor = newColor[1];
+				nickcolor = '#' + newColor[1];
 				$('#m').val('');
 				return false;
 			} else {
 				message = name + ": " + $('#m').val();
-				message = message.fontcolor(nickcolor);
-				socket.emit('chat', message);
+				socket.emit('chat', message.fontcolor(nickcolor));
 				$('#m').val('');
 				return false;
 			}
@@ -52,12 +53,23 @@
 			});
 			socket.on('chat', function(msg){
 				$('#messages').append($('<li>').html(msg));
-				$('#usernames').append($('<li>').html(msg));
 			});
 			socket.on('userName', function(text){
 				document.getElementById("user").innerHTML = "You are " + text + ".";
 				name = text;
 				nickcolor = "#000";
+			});
+			socket.on('newUser', function(newname) {
+				$('#usernames').append($('<li>').html(newname));
+			});
+			socket.on('removeUser', function(oldname) {
+				var list = document.getElementById("usernames");
+				for(i = 0; i < list.getElementsByTagName("li").length; i++) {
+					if(list.childNodes[i].innerHTML == oldname) {
+						list.removeChild(list.childNodes[i]);
+						break;
+					}
+				}
 			});
 		});
 	</script>
