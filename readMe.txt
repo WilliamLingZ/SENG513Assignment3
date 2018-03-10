@@ -1,3 +1,6 @@
+Submission for: William Ling-Zhang
+SID: 10101333
+
 In order to run this server you must open a shell here and type:
 
 node index.js
